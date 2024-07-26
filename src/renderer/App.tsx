@@ -1,50 +1,47 @@
-import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-import icon from '../../assets/icon.svg';
+import { MemoryRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
-
-function Hello() {
-  return (
-    <div>
-      <div className="Hello">
-        <img width="200" alt="icon" src={icon} />
-      </div>
-      <h1>electron-react-boilerplate</h1>
-      <div className="Hello">
-        <a
-          href="https://electron-react-boilerplate.js.org/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="books">
-              📚
-            </span>
-            Read our docs
-          </button>
-        </a>
-        <a
-          href="https://github.com/sponsors/electron-react-boilerplate"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="folded hands">
-              🙏
-            </span>
-            Donate
-          </button>
-        </a>
-      </div>
-    </div>
-  );
-}
+import CreateGame from './pages/create/CreateGame';
+import DisplayGame from './pages/display/DisplayGame';
+import DisplayConnectionRound from './pages/display/stages/DisplayConnectionRound';
+import DisplayEndScreen from './pages/display/stages/DisplayEndScreen';
+import DisplaySequenceRound from './pages/display/stages/DisplaySequenceRound';
+import DisplayStartScreen from './pages/display/stages/DisplayStartScreen';
+import DisplayVowelRound from './pages/display/stages/DisplayVowelRound';
+import DisplayWallRound from './pages/display/stages/DisplayWallRound';
+import GameProvider from './utils/context/GameProvider';
+import HostProvider from './utils/context/HostProvider';
+import {
+  CssBaseline,
+  CssVarsProvider,
+  ThemeProvider,
+  useTheme,
+} from '@mui/joy'
 
 export default function App() {
+  const theme = useTheme()
+
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Hello />} />
-      </Routes>
-    </Router>
-  );
+    <CssVarsProvider >
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <GameProvider>
+          <Router>
+            <Routes>
+              <Route path='/' element={<CreateGame />} />
+              <Route path='display' element={<HostProvider><DisplayGame /></HostProvider>}>
+                <Route index element={<Navigate to='start' />} />
+                <Route path='start' element={<DisplayStartScreen />} />
+                <Route path='connection' element={<DisplayConnectionRound />} />
+                <Route path='sequence' element={<DisplaySequenceRound />} />
+                <Route path='wall' element={<DisplayWallRound />} />
+                <Route path='vowel' element={<DisplayVowelRound />} />
+                <Route path='end' element={<DisplayEndScreen />} />
+                <Route path='*' element={<Navigate to='start' />} />
+              </Route>
+            </Routes>
+          </Router>
+        </GameProvider>
+      </ThemeProvider>
+    </CssVarsProvider >
+  )
 }
